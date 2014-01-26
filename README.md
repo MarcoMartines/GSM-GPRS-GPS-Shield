@@ -13,8 +13,8 @@ Basic Function overview: [Overview](https://raw.github.com/MarcoMartines/GSM-GPR
 
 ### Install Notes:
 - Download current release here:
-	- Generic Version [current]()
-	- TiDiGino Version [current]()
+	- Generic Version [current](https://github.com/madmaze/GSM-GPRS-GPS-Shield/archive/v3.07.1.zip)
+	- TiDiGino Version [current](https://github.com/madmaze/GSM-GPRS-GPS-Shield/archive/v3.07_TDG.zip)
 - Extract to your arduino/libraries folder
 
 ### LICENSE:
