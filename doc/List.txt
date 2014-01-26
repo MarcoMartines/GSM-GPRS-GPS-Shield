@@ -1,0 +1,216 @@
+***************************************************
+BASIC FUNCTIONS in GSM class.
+To call a function the code is: gsm.function_name();
+There is no need to create a class object for GSM class. 
+It'already done inside the library itself.
+***************************************************
+
+int begin(long baud_rate);
+	Function to turn on the module and set the baudrate of communication
+	at specified baud_rate.
+	
+char forceON();
+	When you are using the SIM908 and you need to turn the module on the network mode.
+	It's possible that SIM908 starts itself on charging mode, without network.
+	
+int getIMEI(char* imei);
+	Get the IMEI code of the phone and save it on the imei string.
+	
+boolean readSMS(char* msg, int msglength, char* number, int nlength);
+	Read the first msglength byte of the SMS string and save it to the msg string.
+	Save the first nlenght numbers of the sender number to the number string.
+
+boolean readCall(char* number, int nlength);
+	
+boolean call(char* number, unsigned int milliseconds);
+	Call the specified number after the milliseconds specified.
+
+int readCellData(int &mcc, int &mnc, long &lac, long &cellid);
+	Read information about the network data.
+	
+void SimpleRead();
+	To read, and print on hardware serial, the first byte of the software serial buffer.
+	
+void WhileSimpleRead();
+	As SimpleRead() but read until the buffer is empty.
+	
+void SimpleWrite(char *comm);
+	Write on software serial the specified char.
+	
+void SimpleWrite(char const *comm);
+	Write on software serial the specified const char.
+	
+void SimpleWrite(int comm);
+	Write on software serial the specified int.
+	
+void SimpleWriteln(char *comm);
+	Write on software serial the specified char 
+	and append to the end the return char "\n\r".
+	
+void SimpleWriteln(char const *comm);
+	Write on software serial the specified const char 
+	and append to the end the return char "\n\r".
+	
+void SimpleWriteln(int comm);
+	Write on software serial the specified int 
+	and append to the end the return char "\n\r".
+
+void RxInit(uint16_t start_comm_tmout, uint16_t max_interchar_tmout);
+	To set the timout during the serial communication, for the entire string
+	and for the time between two char.
+	
+byte IsRxFinished(void);
+	To check if the communication is finished, comparing the time
+	with the timeout selected with the RxInit() function.
+	
+byte IsStringReceived(char const *compare_string);
+	To check if the received string from software serial is
+	the same of the specified string.
+
+byte WaitResp(uint16_t start_comm_tmout, uint16_t max_interchar_tmout, 
+	char const *expected_resp_string);
+	It merges the RxInit() and IsStringReceived() functions.
+	
+char SendATCmdWaitResp(char const *AT_cmd_string,
+	uint16_t start_comm_tmout, uint16_t max_interchar_tmout,
+	char const *response_string,
+	byte no_of_attempts);
+	It's a very important function to send a command, wait the response
+	and check if it is the same of the aspected response. If not retry
+	for number of attempts specified.
+
+***************************************************
+SMS FUNCTIONS in SMS class.
+It's need to create a class object for SMS class with
+SMS sms_obj_name (in the examples it's used SMS sms) 
+In the examples, to call a function the code is: sms.function_name();
+***************************************************
+
+char SendSMS(char *number_str, char *message_str);
+	Send a SMS to the specified number with the specified string.
+	
+char SendSMS(byte sim_phonebook_position, char *message_str);
+	Send a SMS to the specified phonebook position with the specified string.
+	
+char IsSMSPresent(byte required_status);
+	Check if there is a message with the specified attribute like:
+		SMS_UNREAD
+		SMS_READ
+		SMS_ALL
+		
+char GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len);
+	Save the SMS content and sender of the SMS in specified SIM position.
+	Save the first max_SMS_len byte of the SMS string to the SMS_text string and
+	the sender to the phone_number string.
+
+char GetAuthorizedSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len,
+					  byte first_authorized_pos, byte last_authorized_pos);
+	Method reads SMS from specified SIM position and
+	makes authorization. It means SMS phone number is compared
+	with specified SIM phonebook position(s) and in case numbers
+	match GETSMS_AUTH_SMS is returned, otherwise GETSMS_NOT_AUTH_SMS
+	is returned.
+	
+char DeleteSMS(byte position);
+	Method deletes SMS from the specified SMS position
+	
+***************************************************
+CALL FUNCTIONS in CALL class.
+It's need to create a class object for SMS class with
+CALL call_obj_name (in the examples it's used CALL call) 
+In the examples, to call a function the code is: call.function_name();
+***************************************************	
+
+byte CallStatus(void);
+	Method checks status of call
+
+	return: 
+		  CALL_NONE         - no call activity
+		  CALL_INCOM_VOICE  - incoming voice
+		  CALL_ACTIVE_VOICE - active voice
+		  CALL_NO_RESPONSE  - no response to the AT command 
+		  CALL_COMM_LINE_BUSY - comm line is not free
+
+byte CallStatusWithAuth(char *phone_number,
+	byte first_authorized_pos, byte last_authorized_pos);
+	Method checks status of call(incoming or active) 
+	and makes authorization with specified SIM positions range
+
+	phone_number: a pointer where the tel. number string of current call will be placed
+				  so the space for the phone number string must be reserved - see example
+	first_authorized_pos: initial SIM phonebook position where the authorization process
+						  starts
+	last_authorized_pos:  last SIM phonebook position where the authorization process
+						  finishes
+
+						  Note(important):
+						  In case first_authorized_pos=0 and also last_authorized_pos=0
+						  the received incoming phone number is NOT authorized at all, so every
+						  incoming is considered as authorized (CALL_INCOM_VOICE_NOT_AUTH is returned).
+
+	return: 
+		  CALL_NONE                   - no call activity
+		  CALL_INCOM_VOICE_AUTH       - incoming voice - authorized
+		  CALL_INCOM_VOICE_NOT_AUTH   - incoming voice - not authorized
+		  CALL_ACTIVE_VOICE           - active voice
+		  CALL_INCOM_DATA_AUTH        - incoming data call - authorized
+		  CALL_INCOM_DATA_NOT_AUTH    - incoming data call - not authorized  
+		  CALL_ACTIVE_DATA            - active data call
+		  CALL_NO_RESPONSE            - no response to the AT command 
+		  CALL_COMM_LINE_BUSY         - comm line is not free
+
+						
+void PickUp(void);
+	To pick up an incoming call.
+	
+void HangUp(void);
+	To hang up and active call.
+	
+void Call(char *number_string);
+	To call the specified number;
+	
+void Call(int sim_position);
+	To call the contact saved on the specified SIM position.
+
+void SendDTMF(char *number_string, int time);
+	Send a combination of DTMF stymbols separated by commas.
+	But a single character does not require quotes.
+	Time indicates the duration in seconds of each sound.
+	An example:
+		call.SendDTMF("1,2,3,4",1);
+		
+***************************************************
+GPRS FUNCTIONS in InetGSM class.
+It's need to create a class object for SMS class with
+InetGSM inet_obj_name (in the examples it's used InetGSM inet) 
+In the examples, to call a function the code is: inet.function_name();
+***************************************************	
+int attachGPRS(char* domain, char* dom1, char* dom2);
+	Start a GPRS connection to the specified domain.
+	It is needs authetication, dom1 is the username, dom2 is the password.
+	If it is no need, left it blank with.
+	An example:
+		inet.attachGPRS("internet.wind","","");
+	
+int httpGET(const char* server, int port, const char* path, char* result, int resultlength);
+	Save the first resultlength byte of the server response, after a GET request.
+	An example:
+		char response[200];
+		inet.httpGET("www.google.com",80,"/news",response,200);
+		
+int dettachGPRS();
+	Close the GPRS connection.
+	
+int connectTCP(const char* server, int port);
+	Start a TCP connection with the server on the specified port.
+	
+int disconnectTCP();
+	Close the TCP connection.
+	
+int connectTCPServer(int port);
+	Put the module on the listening mode, waiting for a TCP connection
+	on the selected port.
+	
+boolean connectedClient();
+	Return true if a client is connected to the module, during the
+	server mode.
