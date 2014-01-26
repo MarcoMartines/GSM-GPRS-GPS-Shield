@@ -12,9 +12,9 @@ For informations and support:
 Basic Function overview: [Overview](https://raw.github.com/MarcoMartines/GSM-GPRS-GPS-Shield/GSMSHIELD/README)
 
 ### Install Notes:
-- Download current release here:
-	- Generic Version [current](https://github.com/madmaze/GSM-GPRS-GPS-Shield/archive/v3.07.1.zip)
-	- TiDiGino Version [current](https://github.com/madmaze/GSM-GPRS-GPS-Shield/archive/v3.07_TDG.zip)
+- Download current release:
+	- Generic Version [current](https://github.com/MarcoMartines/GSM-GPRS-GPS-Shield/archive/v3.07.1.zip)
+	- TiDiGino Version [current](https://github.com/MarcoMartines/GSM-GPRS-GPS-Shield/archive/v3.07_TDG.zip)
 - Extract to your arduino/libraries folder
 
 ### LICENSE:
