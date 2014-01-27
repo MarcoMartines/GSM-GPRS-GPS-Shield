@@ -34,11 +34,11 @@ int InetGSM::httpGET(const char* server, int port, const char* path, char* resul
 	
   gsm.SimpleWrite("GET ");
   gsm.SimpleWrite(path);
-  gsm.SimpleWrite(" HTTP/1.0\nHost: ");
+  gsm.SimpleWrite(" HTTP/1.0\r\nHost: ");
   gsm.SimpleWrite(server);
-  gsm.SimpleWrite("\n");
+  gsm.SimpleWrite("\r\n");
   gsm.SimpleWrite("User-Agent: Arduino");
-  gsm.SimpleWrite("\n\n");
+  gsm.SimpleWrite("\r\n\r\n");
   gsm.SimpleWrite(end_c);
 
   switch(gsm.WaitResp(10000, 10, "SEND OK")){
@@ -51,11 +51,11 @@ int InetGSM::httpGET(const char* server, int port, const char* path, char* resul
   }
   
   
- delay(50);
+  delay(50);
   	#ifdef DEBUG_ON
 		Serial.println("DB:SENT");
 	#endif	
-  int res= gsm.read(result, resultlength);
+  int res = gsm.read(result, resultlength);
 
   //gsm.disconnectTCP();
   
@@ -90,17 +90,17 @@ int InetGSM::httpPOST(const char* server, int port, const char* path, const char
 	
   gsm.SimpleWrite("POST ");
   gsm.SimpleWrite(path);
-  gsm.SimpleWrite(" HTTP/1.1\nHost: ");
+  gsm.SimpleWrite(" HTTP/1.1\r\nHost: ");
   gsm.SimpleWrite(server);
-  gsm.SimpleWrite("\n");
-  gsm.SimpleWrite("User-Agent: Arduino\n");
-  gsm.SimpleWrite("Content-Type: application/x-www-form-urlencoded\n");
+  gsm.SimpleWrite("\r\n");
+  gsm.SimpleWrite("User-Agent: Arduino\r\n");
+  gsm.SimpleWrite("Content-Type: application/x-www-form-urlencoded\r\n");
   gsm.SimpleWrite("Content-Length: ");
   itoa(strlen(parameters),itoaBuffer,10);
   gsm.SimpleWrite(itoaBuffer);
-  gsm.SimpleWrite("\n\n");
+  gsm.SimpleWrite("\r\n\r\n");
   gsm.SimpleWrite(parameters);
-  gsm.SimpleWrite("\n\n");
+  gsm.SimpleWrite("\r\n\r\n");
   gsm.SimpleWrite(end_c);
  
   switch(gsm.WaitResp(10000, 10, "SEND OK")){
