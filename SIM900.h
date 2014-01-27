@@ -24,6 +24,7 @@ class SIMCOM900 : public virtual GSM
 	char forceON();
     virtual int read(char* result, int resultlength);
 	virtual uint8_t read();
+	virtual int available();
     int readCellData(int &mcc, int &mnc, long &lac, long &cellid);
     void SimpleRead();
     void WhileSimpleRead();
