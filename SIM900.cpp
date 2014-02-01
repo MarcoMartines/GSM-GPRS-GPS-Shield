@@ -79,17 +79,49 @@ int SIMCOM900::configandwait(char* pin)
   return 0;
 }
 
+/**
+ * SIMCOM900::read(char* buffer, int buffersize)
+ *
+ * Waits for data to be readable from the gsm module, reads data until
+ * no more is available or the buffer has been filled
+ *
+ * returns number of bytes read
+ *
+ */
 int SIMCOM900::read(char* result, int resultlength)
 {
 	char temp;
 	int i=0;
-	for(i=0; i<resultlength;i++){
-		temp=gsm.read();
-		if(temp>0){
-			Serial.print(temp);
-			result[i]=temp;
-		}
+
+	#ifdef DEBUG_ON
+	  Serial.print("Starting read..\nWaiting for Data..");
+	#endif
+	// Wait until we start receiving data
+	while(gsm.available()<1){
+	  delay(100);
+	  #ifdef DEBUG_ON
+	    Serial.print(".");
+      #endif
 	}
+
+	while(gsm.available()>0 && i<(resultlength-1)){
+		temp=_cell.read();
+		if(temp>0){
+			#ifdef DEBUG_ON
+			  Serial.print(temp);
+			#endif
+			result[i]=temp;
+			i++;
+		}
+		delay(1);
+	}
+
+	// Terminate the string
+	result[resultlength-1]='\0';
+
+	#ifdef DEBUG_ON
+	  Serial.println("\nDone..");
+	#endif
   return i;
 }
 
@@ -337,6 +369,11 @@ int SIMCOM900::getIMEI(char *imei)
     return 0;
   else  
     return 1;
+}
+
+int SIMCOM900::available()
+{
+  return _cell.available();
 }
 
 uint8_t SIMCOM900::read()
