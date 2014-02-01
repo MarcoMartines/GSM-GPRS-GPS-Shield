@@ -27,16 +27,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 static LOG _st_logme(__ST_LOG_LEVEL);
 
 // Generic template
-template<class T> 
-inline Print &operator <<(Print &stream, T arg) 
-{ stream.print(arg); _st_logme.DATA(arg); return stream; }
+template<class T>
+inline Print &operator <<(Print &stream, T arg)
+{
+     stream.print(arg);
+     _st_logme.DATA(arg);
+     return stream;
+}
 
-struct _BASED 
-{ 
-  long val; 
-  int base;
-  _BASED(long v, int b): val(v), base(b) 
-  {}
+struct _BASED {
+     long val;
+     int base;
+     _BASED(long v, int b): val(v), base(b)
+     {}
 };
 
 #define _HEX(a)     _BASED(a, HEX)
@@ -45,12 +48,15 @@ struct _BASED
 #define _BIN(a)     _BASED(a, BIN)
 
 // Specialization for class _BASED
-// Thanks to Arduino forum user Ben Combee who suggested this 
+// Thanks to Arduino forum user Ben Combee who suggested this
 // clever technique to allow for expressions like
 //   Serial << _HEX(a);
 
 inline Print &operator <<(Print &obj, const _BASED &arg)
-{ obj.print(arg.val); return obj; } 
+{
+     obj.print(arg.val);
+     return obj;
+}
 
 #if ARDUINO >= 18
 // Specialization for class _FLOAT
@@ -59,16 +65,18 @@ inline Print &operator <<(Print &obj, const _BASED &arg)
 // feature like this:
 //   Serial << _FLOAT(gps_latitude, 6); // 6 digits of precision
 
-struct _FLOAT
-{
-  float val;
-  int digits;
-  _FLOAT(double v, int d): val(v), digits(d)
-  {}
+struct _FLOAT {
+     float val;
+     int digits;
+     _FLOAT(double v, int d): val(v), digits(d)
+     {}
 };
 
 inline Print &operator <<(Print &obj, const _FLOAT &arg)
-{ obj.print(arg.val, arg.digits); return obj; }
+{
+     obj.print(arg.val, arg.digits);
+     return obj;
+}
 #endif
 
 // Specialization for enum _EndLineCode
@@ -78,7 +86,10 @@ inline Print &operator <<(Print &obj, const _FLOAT &arg)
 
 enum _EndLineCode { endl };
 
-inline Print &operator <<(Print &obj, _EndLineCode arg) 
-{ obj.println(); return obj; }
+inline Print &operator <<(Print &obj, _EndLineCode arg)
+{
+     obj.println();
+     return obj;
+}
 
 #endif
