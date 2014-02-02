@@ -1,4 +1,4 @@
-//#define MEGA
+#define MEGA
 
 #ifndef _HWSERIAL_H_
 #define _HWSERIAL_H_
