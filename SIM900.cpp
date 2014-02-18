@@ -11,9 +11,25 @@ SIMCOM900 gsm;
 SIMCOM900::SIMCOM900() {};
 SIMCOM900::~SIMCOM900() {};
 
+/**********************************************************
+Function: 	This function premits to wake up the module
+			(only for SIM908) when it goes in energy saving
+			mode.
+
+Author:		Marco Martines
+Created:	unknown
+Modified:	18/02/2014
+
+Output:		none
+
+Comments:	It would be nice to call this function
+ 			automatically when gsm.begin is called (of course
+ 			only if a SIM908 is used). 
+**********************************************************/
+
 char SIMCOM900::forceON()
 {
-     char ret_val=0;
+	 char ret_val=0;
      char *p_char;
      char *p_char1;
 
@@ -22,9 +38,9 @@ char SIMCOM900::forceON()
      if(IsStringReceived(str_ok)) {
           ret_val=1;
      }
-     //BCL
+     
      p_char = strchr((char *)(gsm.comm_buf),',');
-     p_char1 = p_char+1;  //we are on the first char of BCS
+     p_char1 = p_char+1;
      *(p_char1+2)=0;
      p_char = strchr((char *)(p_char1), ',');
      if (p_char != NULL) {
