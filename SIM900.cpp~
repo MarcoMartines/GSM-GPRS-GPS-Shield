@@ -93,13 +93,13 @@ int SIMCOM900::read(char* result, int resultlength)
      int i=0;
 
 #ifdef DEBUG_ON
-     Serial.print(F("Starting read..\nWaiting for Data.."));
+     Serial.print("Starting read..\nWaiting for Data..");
 #endif
      // Wait until we start receiving data
      while(gsm.available()<1) {
           delay(100);
 #ifdef DEBUG_ON
-          Serial.print(F("."));
+          Serial.print(".");
 #endif
      }
 
@@ -119,7 +119,7 @@ int SIMCOM900::read(char* result, int resultlength)
      result[resultlength-1]='\0';
 
 #ifdef DEBUG_ON
-     Serial.println(F("\nDone.."));
+     Serial.println("\nDone..");
 #endif
      return i;
 }
