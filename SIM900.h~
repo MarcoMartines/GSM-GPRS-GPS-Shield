@@ -11,6 +11,8 @@ private:
      int changeNSIPmode(char);
 
 public:
+     char* str_ok 	= 	"OK";	//string to reduce stack usage
+     char* str_at	= 	"AT";	//string to reduce stack usage
      SIMCOM900();
      ~SIMCOM900();
      int getCCI(char* cci);
