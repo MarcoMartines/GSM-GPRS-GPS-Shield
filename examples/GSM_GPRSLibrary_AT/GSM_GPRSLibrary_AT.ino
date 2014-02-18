@@ -60,7 +60,7 @@ void serialhwread()
                gsm.SimpleWriteln(inSerial);
           }
           //Send a saved AT command using serial port.
-          if(!strcmp(inSerial,"TEST")) {
+          if(!strcmp(inSerial,"SIGNAL")) {
                Serial.println("SIGNAL QUALITY");
                gsm.SimpleWriteln("AT+CSQ");
           } else {
