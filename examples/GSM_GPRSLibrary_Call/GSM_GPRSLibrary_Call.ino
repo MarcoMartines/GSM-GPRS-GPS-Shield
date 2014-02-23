@@ -25,36 +25,36 @@ int value=0;
 int pin=1;
 char value_str[5];
 
-void setup() 
+void setup()
 {
-  pinMode(pin,INPUT);
-  //Serial connection.
-  Serial.begin(9600);
-  Serial.println("GSM Shield testing.");
-  //Start configuration of shield with baudrate.
-  //For http uses is raccomanded to use 4800 or slower.
-  if (gsm.begin(2400))
-    Serial.println("\nstatus=READY");
-  else Serial.println("\nstatus=IDLE");
+     pinMode(pin,INPUT);
+     //Serial connection.
+     Serial.begin(9600);
+     Serial.println("GSM Shield testing.");
+     //Start configuration of shield with baudrate.
+     //For http uses is raccomanded to use 4800 or slower.
+     if (gsm.begin(2400))
+          Serial.println("\nstatus=READY");
+     else Serial.println("\nstatus=IDLE");
 };
 
-void loop() 
+void loop()
 {
-  //Chekcs status of call
-  stat=call.CallStatusWithAuth(number,1,3);
-  //If the incoming call is from an authorized number
-  //saved on SIM in the positions range from 1 to 3.
-  if(stat==CALL_INCOM_VOICE_AUTH){
-    //Hang up the call.
-    call.HangUp();
-    delay(2000);
-    //Check the value of the input.
-    value=digitalRead(1);
-    //Convert the int to a string.
-    itoa(value,value_str,10);
-    //Send an SMS to the previous number with
-    //the value read previously.
-    sms.SendSMS(number,value_str);
-  }
-  delay(1000);
+     //Chekcs status of call
+     stat=call.CallStatusWithAuth(number,1,3);
+     //If the incoming call is from an authorized number
+     //saved on SIM in the positions range from 1 to 3.
+     if(stat==CALL_INCOM_VOICE_AUTH) {
+          //Hang up the call.
+          call.HangUp();
+          delay(2000);
+          //Check the value of the input.
+          value=digitalRead(1);
+          //Convert the int to a string.
+          itoa(value,value_str,10);
+          //Send an SMS to the previous number with
+          //the value read previously.
+          sms.SendSMS(number,value_str);
+     }
+     delay(1000);
 };
