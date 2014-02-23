@@ -23,6 +23,7 @@
 #ifdef MEGA
 #include "HWSerial.h"
 #endif
+
 // if defined - debug print is enabled with possibility to print out
 // debug texts to the terminal program
 //#define DEBUG_PRINT
@@ -75,7 +76,9 @@
 #define CHECK_AND_OPEN    0
 #define CLOSE_AND_REOPEN  1
 
-
+// Common string used
+#define str_ok 		"OK"			//string to reduce stack usage
+#define str_at		"AT"			//string to reduce stack usage
 
 // SMS type
 // use by method IsSMSPresent()

@@ -11,20 +11,36 @@ SIMCOM900 gsm;
 SIMCOM900::SIMCOM900() {};
 SIMCOM900::~SIMCOM900() {};
 
+/**********************************************************
+Function: 	This function premits to wake up the module
+			(only for SIM908) when it goes in energy saving
+			mode.
+
+Author:		Marco Martines
+Created:	unknown
+Modified:	18/02/2014
+
+Output:		none
+
+Comments:	It would be nice to call this function
+ 			automatically when gsm.begin is called (of course
+ 			only if a SIM908 is used). 
+**********************************************************/
+
 char SIMCOM900::forceON()
 {
-     char ret_val=0;
+	 char ret_val=0;
      char *p_char;
      char *p_char1;
 
      SimpleWriteln(F("AT+CREG?"));
-     WaitResp(5000, 100, "OK");
-     if(IsStringReceived("OK")) {
+     WaitResp(5000, 100, str_ok);
+     if(IsStringReceived(str_ok)) {
           ret_val=1;
      }
-     //BCL
+     
      p_char = strchr((char *)(gsm.comm_buf),',');
-     p_char1 = p_char+1;  //we are on the first char of BCS
+     p_char1 = p_char+1;
      *(p_char1+2)=0;
      p_char = strchr((char *)(p_char1), ',');
      if (p_char != NULL) {
@@ -93,13 +109,13 @@ int SIMCOM900::read(char* result, int resultlength)
      int i=0;
 
 #ifdef DEBUG_ON
-     Serial.print("Starting read..\nWaiting for Data..");
+     Serial.print(F("Starting read..\nWaiting for Data.."));
 #endif
      // Wait until we start receiving data
      while(gsm.available()<1) {
           delay(100);
 #ifdef DEBUG_ON
-          Serial.print(".");
+          Serial.print(F("."));
 #endif
      }
 
@@ -119,7 +135,7 @@ int SIMCOM900::read(char* result, int resultlength)
      result[resultlength-1]='\0';
 
 #ifdef DEBUG_ON
-     Serial.println("\nDone..");
+     Serial.println(F("\nDone.."));
 #endif
      return i;
 }
@@ -229,7 +245,7 @@ boolean SIMCOM900::readSMS(char* msg, int msglength, char* number, int nlength)
           SimpleWriteln(index);
           // Serial.print("VAL= ");
           // Serial.println(index);
-          gsm.WaitResp(5000, 50, "OK");
+          gsm.WaitResp(5000, 50, str_ok);
           return true;
      };
      return false;
@@ -252,7 +268,7 @@ boolean SIMCOM900::readCall(char* number, int nlength)
 #ifdef MEGA
           _cell.getString("", "\"", number, nlength);
 #endif
-          SimpleWriteln("ATH");
+          SimpleWriteln(F("ATH"));
           delay(1000);
           //_cell.flush();
           return true;
@@ -267,11 +283,11 @@ boolean SIMCOM900::call(char* number, unsigned int milliseconds)
 
      //_tf.setTimeout(_GSM_DATA_TOUT_);
 
-     SimpleWrite("ATD");
+     SimpleWrite(F("ATD"));
      SimpleWrite(number);
-     SimpleWriteln(";");
+     SimpleWriteln(F(";"));
      delay(milliseconds);
-     SimpleWriteln("ATH");
+     SimpleWriteln(F("ATH"));
 
      return true;
 
@@ -291,9 +307,9 @@ int SIMCOM900::setPIN(char *pin)
      SimpleWrite(F("AT+CPIN="));
      SimpleWriteln(pin);
 
-     //Expect "OK".
+     //Expect str_ok.
 
-     if(gsm.WaitResp(5000, 50, "OK")!=RX_FINISHED_STR_NOT_RECV)
+     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV)
           return 0;
      else
           return 1;
@@ -310,8 +326,8 @@ int SIMCOM900::changeNSIPmode(char mode)
 
      SimpleWrite(F("AT+QIDNSIP="));
      SimpleWriteln(mode);
-     if(gsm.WaitResp(5000, 50, "OK")!=RX_FINISHED_STR_NOT_RECV) return 0;
-     //if(!_tf.find("OK")) return 0;
+     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV) return 0;
+     //if(!_tf.find(str_ok)) return 0;
 
      return 1;
 }
@@ -337,8 +353,8 @@ int SIMCOM900::getCCI(char *cci)
      _cell.getString("AT+QCCID\r\r\r\n","\r\n",cci, 21);
 #endif
 
-     //Expect "OK".
-     if(gsm.WaitResp(5000, 50, "OK")!=RX_FINISHED_STR_NOT_RECV)
+     //Expect str_ok.
+     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV)
           return 0;
      else
           return 1;
@@ -362,8 +378,8 @@ int SIMCOM900::getIMEI(char *imei)
      _cell.getString("\r\n","\r\n",imei, 16);
 #endif
 
-     //Expect "OK".
-     if(gsm.WaitResp(5000, 50, "OK")!=RX_FINISHED_STR_NOT_RECV)
+     //Expect str_ok.
+     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV)
           return 0;
      else
           return 1;
@@ -575,7 +591,7 @@ char GSM::SetSpeakerVolume(byte speaker_volume)
     ret_val = -2; // ERROR
   }
   else {
-    if(IsStringReceived("OK")) {
+    if(IsStringReceived(str_ok)) {
       last_speaker_volume = speaker_volume;
       ret_val = last_speaker_volume; // OK
     }
@@ -681,7 +697,7 @@ char GSM::SendDTMFSignal(byte dtmf_tone)
     ret_val = -2; // ERROR
   }
   else {
-    if(IsStringReceived("OK")) {
+    if(IsStringReceived(str_ok)) {
       ret_val = dtmf_tone; // OK
     }
     else ret_val = -3; // ERROR
@@ -854,7 +870,7 @@ char GSM::WritePhoneNumber(byte position, char *phone_number)
 
      // 5000 msec. for initial comm tmout
      // 50 msec. for inter character timeout
-     switch (WaitResp(5000, 50, "OK")) {
+     switch (WaitResp(5000, 50, str_ok)) {
      case RX_TMOUT_ERR:
           // response was not received in specific time
           break;
@@ -908,7 +924,7 @@ char GSM::DelPhoneNumber(byte position)
 
      // 5000 msec. for initial comm tmout
      // 50 msec. for inter character timeout
-     switch (WaitResp(5000, 50, "OK")) {
+     switch (WaitResp(5000, 50, str_ok)) {
      case RX_TMOUT_ERR:
           // response was not received in specific time
           break;
@@ -974,10 +990,10 @@ char GSM::ComparePhoneNumber(byte position, char *phone_number)
      ret_val = 0; // numbers are not the same so far
      if (position == 0) return (-3);
      if (1 == GetPhoneNumber(position, sim_phone_number)) {
-          Serial.print("CHIAMANTE ");
-          Serial.println(phone_number);
-          Serial.print("SALVATO ");
-          Serial.println(sim_phone_number);
+          //Serial.print("CHIAMANTE ");
+          //Serial.println(phone_number);
+          //Serial.print("SALVATO ");
+          //Serial.println(sim_phone_number);
 
           // there is a valid number at the spec. SIM position
           // -------------------------------------------------

@@ -27,7 +27,6 @@ based on QuectelM10 chip.
 #define _GSM_TXPIN_ 2
 #define _GSM_RXPIN_ 3
 
-
 #ifdef UNO
 GSM::GSM():_cell(_GSM_TXPIN_,_GSM_RXPIN_),_tf(_cell, 10),_status(IDLE)
 {
@@ -49,7 +48,7 @@ int GSM::begin(long baud_rate)
 
 #ifdef UNO
      if (baud_rate==115200) {
-          Serial.println("Don't use baudrate 115200 with Software Serial.\nAutomatically changed at 9600.");
+          Serial.println(F("Don't use baudrate 115200 with Software Serial.\nAutomatically changed at 9600."));
           baud_rate=9600;
      }
 #endif
@@ -64,10 +63,10 @@ int GSM::begin(long baud_rate)
 
      // if no-reply we turn to turn on the module
      for (cont=0; cont<3; cont++) {
-          if (AT_RESP_ERR_NO_RESP == SendATCmdWaitResp("AT", 500, 100, "OK", 5)&&!turnedON) {		//check power
+          if (AT_RESP_ERR_NO_RESP == SendATCmdWaitResp(str_at, 500, 100, str_ok, 5)&&!turnedON) {		//check power
                // there is no response => turn on the module
 #ifdef DEBUG_ON
-               Serial.println("DB:NO RESP");
+               Serial.println(F("DB:NO RESP"));
 #endif
                // generate turn on pulse
                digitalWrite(GSM_ON, HIGH);
@@ -77,14 +76,14 @@ int GSM::begin(long baud_rate)
                WaitResp(1000, 1000);
           } else {
 #ifdef DEBUG_ON
-               Serial.println("DB:ELSE");
+               Serial.println(F("DB:ELSE"));
 #endif
                WaitResp(1000, 1000);
           }
      }
 
 
-     if (AT_RESP_OK == SendATCmdWaitResp("AT", 500, 100, "OK", 5)) {
+     if (AT_RESP_OK == SendATCmdWaitResp(str_at, 500, 100, str_ok, 5)) {
 #ifdef DEBUG_ON
           Serial.println(F("DB:CORRECT BR"));
 #endif
@@ -93,7 +92,7 @@ int GSM::begin(long baud_rate)
      }
 
 
-     if (AT_RESP_ERR_DIF_RESP == SendATCmdWaitResp("AT", 500, 100, "OK", 5)&&!turnedON) {		//check OK
+     if (AT_RESP_ERR_DIF_RESP == SendATCmdWaitResp(str_at, 500, 100, str_ok, 5)&&!turnedON) {		//check OK
 #ifdef DEBUG_ON
           Serial.println(F("DB:AUTO BAUD RATE"));
 #endif
@@ -140,31 +139,31 @@ int GSM::begin(long baud_rate)
 #ifdef DEBUG_PRINT
                // parameter 0 - because module is off so it is not necessary
                // to send finish AT<CR> here
-               DebugPrint("DEBUG: Stringa ", 0);
+               DebugPrint(F("DEBUG: Stringa "), 0);
                DebugPrint(buff, 0);
 #endif
 
 
-               if (AT_RESP_OK == SendATCmdWaitResp("AT", 500, 100, "OK", 5)) {
+               if (AT_RESP_OK == SendATCmdWaitResp(str_at, 500, 100, str_ok, 5)) {
 #ifdef DEBUG_ON
                     Serial.println(F("DB:FOUND PREV BR"));
 #endif
-                    _cell.print(F("AT+IPR="));
+                    _cell.print("AT+IPR=");
                     _cell.print(baud_rate);
                     _cell.print("\r"); // send <CR>
                     delay(500);
                     _cell.begin(baud_rate);
                     delay(100);
-                    if (AT_RESP_OK == SendATCmdWaitResp("AT", 500, 100, "OK", 5)) {
+                    if (AT_RESP_OK == SendATCmdWaitResp(str_at, 500, 100, str_ok, 5)) {
 #ifdef DEBUG_ON
-                         Serial.println("DB:OK BR");
+                         Serial.println(F("DB:OK BR"));
 #endif
                     }
                     turnedON=true;
                     break;
                }
 #ifdef DEBUG_ON
-               Serial.println("DB:NO BR");
+               Serial.println(F("DB:NO BR"));
 #endif
           }
           // communication line is not used yet = free
@@ -185,7 +184,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -198,7 +197,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -211,7 +210,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -224,7 +223,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -237,7 +236,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -250,7 +249,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -263,7 +262,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -276,7 +275,7 @@ int GSM::begin(long baud_rate)
                     delay(1000);
                     _cell.begin(9600);
                     delay(1000);
-                    SendATCmdWaitResp("AT", 500, 100, "OK", 5);
+                    SendATCmdWaitResp(str_at, 500, 100, str_ok, 5);
                     delay(1000);
                     WaitResp(1000,1000);
                     break;
@@ -305,7 +304,7 @@ int GSM::begin(long baud_rate)
           //just to try to fix some problems with 115200 baudrate
           _cell.begin(115200);
           delay(1000);
-          _cell.print(F("AT+IPR="));
+          _cell.print("AT+IPR=");
           _cell.print(baud_rate);
           _cell.print("\r"); // send <CR>
           return(0);
@@ -322,21 +321,21 @@ void GSM::InitParam(byte group)
 
           SetCommLineStatus(CLS_ATCMD);
           // Reset to the factory settings
-          SendATCmdWaitResp("AT&F", 1000, 50, "OK", 5);
+          SendATCmdWaitResp(F("AT&F"), 1000, 50, str_ok, 5);
           // switch off echo
-          SendATCmdWaitResp("ATE0", 500, 50, "OK", 5);
+          SendATCmdWaitResp(F("ATE0"), 500, 50, str_ok, 5);
           // setup fixed baud rate
-          //SendATCmdWaitResp("AT+IPR=9600", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT+IPR=9600", 500, 50, str_ok, 5);
           // setup mode
-          //SendATCmdWaitResp("AT#SELINT=1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#SELINT=1", 500, 50, str_ok, 5);
           // Switch ON User LED - just as signalization we are here
-          //SendATCmdWaitResp("AT#GPIO=8,1,1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#GPIO=8,1,1", 500, 50, str_ok, 5);
           // Sets GPIO9 as an input = user button
-          //SendATCmdWaitResp("AT#GPIO=9,0,0", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#GPIO=9,0,0", 500, 50, str_ok, 5);
           // allow audio amplifier control
-          //SendATCmdWaitResp("AT#GPIO=5,0,2", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#GPIO=5,0,2", 500, 50, str_ok, 5);
           // Switch OFF User LED- just as signalization we are finished
-          //SendATCmdWaitResp("AT#GPIO=8,0,1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#GPIO=8,0,1", 500, 50, str_ok, 5);
           SetCommLineStatus(CLS_FREE);
           break;
 
@@ -345,25 +344,25 @@ void GSM::InitParam(byte group)
           //if (CLS_FREE != GetCommLineStatus()) return;
           SetCommLineStatus(CLS_ATCMD);
           // Request calling line identification
-          SendATCmdWaitResp(F("AT+CLIP=1"), 500, 50, "OK", 5);
+          SendATCmdWaitResp(F("AT+CLIP=1"), 500, 50, str_ok, 5);
           // Mobile Equipment Error Code
-          SendATCmdWaitResp(F("AT+CMEE=0"), 500, 50, "OK", 5);
+          SendATCmdWaitResp(F("AT+CMEE=0"), 500, 50, str_ok, 5);
           // Echo canceller enabled
-          //SendATCmdWaitResp("AT#SHFEC=1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#SHFEC=1", 500, 50, str_ok, 5);
           // Ringer tone select (0 to 32)
-          //SendATCmdWaitResp("AT#SRS=26,0", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#SRS=26,0", 500, 50, str_ok, 5);
           // Microphone gain (0 to 7) - response here sometimes takes
           // more than 500msec. so 1000msec. is more safety
-          //SendATCmdWaitResp("AT#HFMICG=7", 1000, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#HFMICG=7", 1000, 50, str_ok, 5);
           // set the SMS mode to text
-          SendATCmdWaitResp(F("AT+CMGF=1"), 500, 50, "OK", 5);
+          SendATCmdWaitResp(F("AT+CMGF=1"), 500, 50, str_ok, 5);
           // Auto answer after first ring enabled
           // auto answer is not used
-          //SendATCmdWaitResp("ATS0=1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("ATS0=1", 500, 50, str_ok, 5);
           // select ringer path to handsfree
-          //SendATCmdWaitResp("AT#SRP=1", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT#SRP=1", 500, 50, str_ok, 5);
           // select ringer sound level
-          //SendATCmdWaitResp("AT+CRSL=2", 500, 50, "OK", 5);
+          //SendATCmdWaitResp("AT+CRSL=2", 500, 50, str_ok, 5);
           // we must release comm line because SetSpeakerVolume()
           // checks comm line if it is free
           SetCommLineStatus(CLS_FREE);
@@ -372,7 +371,7 @@ void GSM::InitParam(byte group)
           // init SMS storage
           InitSMSMemory();
           // select phonebook memory storage
-          SendATCmdWaitResp(F("AT+CPBS=\"SM\""), 1000, 50, "OK", 5);
+          SendATCmdWaitResp(F("AT+CPBS=\"SM\""), 1000, 50, str_ok, 5);
           SendATCmdWaitResp(F("AT+CIPSHUT"), 500, 50, "SHUT OK", 5);
           break;
      }
@@ -667,9 +666,9 @@ byte GSM::IsStringReceived(char const *compare_string)
           }
      } else {
 #ifdef DEBUG_ON
-          Serial.print("ATT: ");
+          Serial.print(F("ATT: "));
           Serial.println(compare_string);
-          Serial.print("RIC: NO STRING RCVD");
+          Serial.print(F("RIC: NO STRING RCVD"));
 #endif
      }
 
@@ -711,12 +710,12 @@ char GSM::InitSMSMemory(void)
      ret_val = 0; // not initialized yet
 
      // Disable messages about new SMS from the GSM module
-     SendATCmdWaitResp("AT+CNMI=2,0", 1000, 50, "OK", 2);
+     SendATCmdWaitResp(F("AT+CNMI=2,0"), 1000, 50, str_ok, 2);
 
      // send AT command to init memory for SMS in the SIM card
      // response:
      // +CPMS: <usedr>,<totalr>,<usedw>,<totalw>,<useds>,<totals>
-     if (AT_RESP_OK == SendATCmdWaitResp("AT+CPMS=\"SM\",\"SM\",\"SM\"", 1000, 1000, "+CPMS:", 10)) {
+     if (AT_RESP_OK == SendATCmdWaitResp(F("AT+CPMS=\"SM\",\"SM\",\"SM\""), 1000, 1000, "+CPMS:", 10)) {
           ret_val = 1;
      } else ret_val = 0;
 

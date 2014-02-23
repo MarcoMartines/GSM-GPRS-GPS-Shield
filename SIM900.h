@@ -3,7 +3,6 @@
 #include <SoftwareSerial.h>
 #include "HWSerial.h"
 #include "GSM.h"
-
 class SIMCOM900 : public virtual GSM {
 
 private:
