@@ -42,6 +42,10 @@ GSM::GSM()
 
 int GSM::begin(long baud_rate)
 {
+	 // Set pin modes
+	 pinMode(GSM_ON,OUTPUT);
+	 pinMode(GSM_RESET,OUTPUT);
+
 #ifdef UNO
      if (baud_rate==115200) {
           Serial.println(F("Don't use baudrate 115200 with Software Serial.\nAutomatically changed at 9600."));
