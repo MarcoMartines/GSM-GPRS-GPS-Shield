@@ -371,17 +371,19 @@ int SIMCOM900::getIMEI(char *imei)
      SimpleWriteln(F("AT+GSN"));
 
      //Read response from modem
-#ifdef UNO
-     _tf.getString("\r\n","\r\n",imei, 16);
-#endif
-#ifdef MEGA
-     _cell.getString("\r\n","\r\n",imei, 16);
-#endif
+//#ifdef UNO
+//     _tf.getString("\r\n","\r\n",imei, 16);
+//#endif
+//#ifdef MEGA
+//     _cell.getString("\r\n","\r\n",imei, 16);
+//#endif
 
      //Expect str_ok.
-     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV)
+     if(gsm.WaitResp(5000, 50, str_ok)!=RX_FINISHED_STR_NOT_RECV){
+     	memcpy(imei,gsm.comm_buf+2,15);
+     	imei[15]='\0';
           return 0;
-     else
+     }else
           return 1;
 }
 
