@@ -47,10 +47,17 @@ void loop()
 {
      if(started) {
           //Read if there are messages on SIM card and print them.
-          if(gsm.readSMS(smsbuffer, 160, n, 20)) {
+        /**  deprecated method
+        if(gsm.readSMS(smsbuffer, 160, n, 20)) {
                Serial.println(n);
                Serial.println(smsbuffer);
           }
+          **/
+          //get 1st sms
+          sms.GetSMS(1,n,20,smsbuffer,160);
+          Serial.println(n);
+          Serial.println(smsbuffer);
+          
           delay(1000);
      }
 };
