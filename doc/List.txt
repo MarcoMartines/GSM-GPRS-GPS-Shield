@@ -99,7 +99,7 @@ char IsSMSPresent(byte required_status);
 		SMS_READ
 		SMS_ALL
 		
-char GetSMS(byte position, char *phone_number, byte max_SMS_len , char *SMS_text, byte max_SMS_len);
+char GetSMS(byte position, char *phone_number, byte max_phone_len , char *SMS_text, byte max_SMS_len);
 	Save the SMS content and sender of the SMS in specified SIM position.
 	Save the first max_SMS_len byte of the SMS string to the SMS_text string and
 	the sender first max_phone_len byte to the phone_number string.
