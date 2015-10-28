@@ -19,6 +19,7 @@ int getIMEI(char* imei);
 boolean readSMS(char* msg, int msglength, char* number, int nlength);
 	Read the first msglength byte of the SMS string and save it to the msg string.
 	Save the first nlenght numbers of the sender number to the number string.
+	**this method is deprecated**
 
 boolean readCall(char* number, int nlength);
 	
@@ -98,10 +99,10 @@ char IsSMSPresent(byte required_status);
 		SMS_READ
 		SMS_ALL
 		
-char GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len);
+char GetSMS(byte position, char *phone_number, byte max_SMS_len , char *SMS_text, byte max_SMS_len);
 	Save the SMS content and sender of the SMS in specified SIM position.
 	Save the first max_SMS_len byte of the SMS string to the SMS_text string and
-	the sender to the phone_number string.
+	the sender first max_phone_len byte to the phone_number string.
 
 char GetAuthorizedSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len,
 					  byte first_authorized_pos, byte last_authorized_pos);
