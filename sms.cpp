@@ -281,7 +281,7 @@ an example of usage:
           #endif
         }
 **********************************************************/
-char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len)
+char SMSGSM::GetSMS(byte position, char *phone_number,byte max_phone_len, char *SMS_text, byte max_SMS_len)
 {
      char ret_val = -1;
      char *p_char;
@@ -349,7 +349,13 @@ char SMSGSM::GetSMS(byte position, char *phone_number, char *SMS_text, byte max_
           p_char = strchr((char *)(p_char1),'"');
           if (p_char != NULL) {
                *p_char = 0; // end of string
-               strcpy(phone_number, (char *)(p_char1));
+               len = strlen(p_char1);
+               if(len < max_phone_len){
+                 strcpy(phone_number, (char *)(p_char1));
+               }else{
+                 memcpy(phone_number,(char *)p_char1,(max_phone_len-1));
+                 phone_number[max_phone_len]=0;
+               }
           }
 
 
@@ -464,13 +470,13 @@ an example of usage:
           #endif
         }
 **********************************************************/
-char SMSGSM::GetAuthorizedSMS(byte position, char *phone_number, char *SMS_text, byte max_SMS_len,
+char SMSGSM::GetAuthorizedSMS(byte position, char *phone_number,byte max_phone_len, char *SMS_text, byte max_SMS_len,
                               byte first_authorized_pos, byte last_authorized_pos)
 {
      char ret_val = -1;
      byte i;
 
-     ret_val = GetSMS(position, phone_number, SMS_text, max_SMS_len);
+     ret_val = GetSMS(position, phone_number, max_phone_len, SMS_text, max_SMS_len);
      if (ret_val < 0) {
           // here is ERROR return code => finish
           // -----------------------------------
